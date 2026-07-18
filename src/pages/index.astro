@@ -64,80 +64,6 @@ import '../styles/global.css';
         >
       </header>
 
-      <div class="mic-btn-wrapper">
-        <div class="ripple"></div>
-        <button class="mic-btn" id="mic-btn" aria-label="Start recording">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"
-            ></path>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-            <line x1="12" x2="12" y1="19" y2="22"></line>
-          </svg>
-        </button>
-        <button
-          class="stop-btn"
-          id="stop-btn"
-          aria-label="Stop speaking"
-          style="display: none;"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          </svg>
-        </button>
-      </div>
-
-      <div class="text-input-wrapper">
-        <input
-          type="text"
-          id="text-input"
-          placeholder="Or type your message here..."
-        />
-        <button id="send-btn" aria-label="Send message">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
-        </button>
-      </div>
-
-      <div id="status-text">Tap to start speaking</div>
-
-      <div class="loading-indicator">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
-
       <div class="transcript-box">
         <div>
           <div class="transcript-label">You</div>
@@ -148,6 +74,78 @@ import '../styles/global.css';
             AI
           </div>
           <div id="ai-response"></div>
+        </div>
+      </div>
+
+      <div class="loading-indicator">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <div id="status-text">Tap to start speaking</div>
+
+      <div class="bottom-input-bar">
+        <div class="mic-btn-wrapper">
+          <div class="ripple"></div>
+          <button class="mic-btn" id="mic-btn" aria-label="Start recording">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"
+              ></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" x2="12" y1="19" y2="22"></line>
+            </svg>
+          </button>
+          <button
+            class="stop-btn"
+            id="stop-btn"
+            aria-label="Stop speaking"
+            style="display: none;"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            </svg>
+          </button>
+        </div>
+
+        <div class="text-input-wrapper">
+          <input type="text" id="text-input" placeholder="Type a message..." />
+          <button id="send-btn" aria-label="Send message">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
         </div>
       </div>
     </main>
