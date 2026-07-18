@@ -128,6 +128,7 @@ function setAppState(state) {
       break;
     case 'thinking':
       statusText.textContent = 'Thinking...';
+      stopBtn.style.display = 'flex';
       break;
     case 'speaking':
       statusText.textContent = 'Speaking...';
@@ -187,6 +188,8 @@ if (SpeechRecognition) {
 // WebLLM Processing
 async function handleAIProcessing(userInput) {
   setAppState('thinking');
+  const sessionId = Date.now();
+  currentAiSession = sessionId;
   
   try {
     if (!engine) {
@@ -199,6 +202,9 @@ async function handleAIProcessing(userInput) {
     ];
 
     const reply = await engine.chat.completions.create({ messages });
+    
+    if (currentAiSession !== sessionId) return;
+
     const responseText = reply.choices[0].message.content;
     
     // Show AI Response
@@ -209,6 +215,7 @@ async function handleAIProcessing(userInput) {
     speakResponse(responseText);
     
   } catch (error) {
+    if (currentAiSession !== sessionId) return;
     console.error('AI Processing Error:', error);
     aiLabel.style.display = 'block';
     aiResponseBox.textContent = 'Error: ' + error.message;
@@ -254,6 +261,10 @@ micBtn.addEventListener('click', () => {
 });
 
 stopBtn.addEventListener('click', () => {
+  currentAiSession = null;
+  if (engine && typeof engine.interruptGenerate === 'function') {
+    engine.interruptGenerate();
+  }
   if (synth && synth.speaking) {
     synth.cancel();
   }
