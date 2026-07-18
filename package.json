@@ -12,6 +12,8 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.84",
     "astro": "^7.1.1"
-  }
+  },
+  "packageManager": "pnpm@10.19.0"
 }

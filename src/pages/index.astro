@@ -15,8 +15,35 @@ import '../styles/global.css';
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
 
+  <!-- Setup Overlay -->
+  <div id="setup-overlay">
+    <div class="setup-card">
+      <h2>Local AI Setup</h2>
+      <p>This app uses a local Large Language Model (LLM) running entirely in your browser for enhanced privacy and offline capability.</p>
+      <p class="warning">Warning: Downloading the model will take time and use system resources (RAM/GPU).</p>
+      
+      <div class="model-select-wrapper">
+        <label for="model-select">Select an AI Model:</label>
+        <select id="model-select">
+          <option value="Llama-3-8B-Instruct-q4f32_1-MLC">Llama 3 8B (Recommended, ~4.5GB)</option>
+          <option value="Phi-3.5-mini-instruct-q4f16_1-MLC">Phi-3.5 Mini (~2.5GB)</option>
+          <option value="gemma-2b-it-q4f32_1-MLC">Gemma 2B (~1.5GB)</option>
+        </select>
+      </div>
+
+      <button id="download-btn">Download & Start</button>
+
+      <div class="progress-container" id="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div id="progress-text">Initializing...</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Main App UI -->
-  <main class="app-container" data-state="idle" id="app-container">
+  <main class="app-container" data-state="idle" id="app-container" style="display: none;">
     <header>
       <h1>Voice AI</h1>
       <p class="subtitle">Powered by Chrome Built-in AI</p>

@@ -1,10 +1,49 @@
-// DOM Elements
+import { CreateMLCEngine } from '@mlc-ai/web-llm';
+
+// Setup DOM Elements
+const setupOverlay = document.getElementById('setup-overlay');
+const modelSelect = document.getElementById('model-select');
+const downloadBtn = document.getElementById('download-btn');
+const progressContainer = document.getElementById('progress-container');
+const progressFill = document.getElementById('progress-fill');
+const progressText = document.getElementById('progress-text');
+
+// App DOM Elements
 const appContainer = document.getElementById('app-container');
 const micBtn = document.getElementById('mic-btn');
 const statusText = document.getElementById('status-text');
 const transcriptBox = document.getElementById('transcript');
 const aiResponseBox = document.getElementById('ai-response');
 const aiLabel = document.getElementById('ai-label');
+
+let engine = null;
+
+// Setup Logic
+downloadBtn.addEventListener('click', async () => {
+  const selectedModel = modelSelect.value;
+  downloadBtn.disabled = true;
+  modelSelect.disabled = true;
+  progressContainer.style.display = 'block';
+
+  try {
+    const initProgressCallback = (initProgress) => {
+      progressFill.style.width = `${Math.round(initProgress.progress * 100)}%`;
+      progressText.textContent = initProgress.text;
+    };
+
+    engine = await CreateMLCEngine(selectedModel, { initProgressCallback });
+    
+    // Setup complete, hide overlay and show app
+    setupOverlay.style.display = 'none';
+    appContainer.style.display = 'flex';
+  } catch (error) {
+    console.error("Error loading model:", error);
+    progressText.textContent = "Error loading model. See console.";
+    progressText.style.color = 'var(--danger-color)';
+    downloadBtn.disabled = false;
+    modelSelect.disabled = false;
+  }
+});
 
 // Web Speech API fallback
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -86,45 +125,22 @@ if (SpeechRecognition) {
   alert('Web Speech API is not supported in this browser. Try Chrome.');
 }
 
-// Chrome Prompt API AI Processing
+// WebLLM Processing
 async function handleAIProcessing(userInput) {
   setAppState('thinking');
   
   try {
-    let responseText = '';
-    
-    // Check if any known AI API exists early
-    if (!window.ai || (!window.ai.languageModel && !window.ai.assistant && !window.ai.createTextSession)) {
-      responseText = "Chrome Built-in AI is not available or the Prompt API is missing.\n\nTo fix this:\n1. Open Chrome Canary or Dev channel.\n2. Navigate to chrome://flags.\n3. Enable '#prompt-api-for-gemini-nano'.\n4. Enable '#optimization-guide-on-device-model'.\n5. Relaunch your browser.";
-      console.error('Prompt API not found. Please enable the necessary flags.');
-      
-      aiLabel.style.display = 'block';
-      aiResponseBox.textContent = responseText;
-      speakResponse(responseText);
-      return;
+    if (!engine) {
+      throw new Error("AI Engine not initialized. Please refresh and download a model.");
     }
 
-    let session;
-    // Handle the evolving API: window.ai.languageModel vs window.ai.assistant vs window.ai.createTextSession
-    if (window.ai.languageModel) {
-      // Latest API
-      const capabilities = await window.ai.languageModel.capabilities();
-      if (capabilities.available === 'no') {
-        throw new Error('AI Language Model is not available on this device.');
-      }
-      session = await window.ai.languageModel.create();
-      responseText = await session.prompt(userInput);
-    } 
-    else if (window.ai.assistant) {
-      // Fallback 1
-      session = await window.ai.assistant.create();
-      responseText = await session.prompt(userInput);
-    }
-    else if (window.ai.createTextSession) {
-      // Fallback 2
-      session = await window.ai.createTextSession();
-      responseText = await session.prompt(userInput);
-    }
+    const messages = [
+      { role: "system", content: "You are a helpful, concise AI voice assistant. Keep answers brief as they will be spoken out loud." },
+      { role: "user", content: userInput }
+    ];
+
+    const reply = await engine.chat.completions.create({ messages });
+    const responseText = reply.choices[0].message.content;
     
     // Show AI Response
     aiLabel.style.display = 'block';
@@ -132,11 +148,6 @@ async function handleAIProcessing(userInput) {
     
     // Speak response
     speakResponse(responseText);
-    
-    // Cleanup session if possible
-    if (session && typeof session.destroy === 'function') {
-      session.destroy();
-    }
     
   } catch (error) {
     console.error('AI Processing Error:', error);
