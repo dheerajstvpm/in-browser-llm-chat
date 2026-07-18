@@ -224,6 +224,28 @@ async function handleAIProcessing(userInput) {
 }
 
 // Speech Synthesis
+function getFriendlyVoice() {
+  const voices = synth.getVoices();
+  const preferredVoices = [
+    'Microsoft Aria Online (Natural)',
+    'Microsoft Guy Online (Natural)',
+    'Microsoft Jenny Online (Natural)',
+    'Google US English',
+    'Google UK English Female',
+    'Google UK English Male',
+    'Samantha',
+    'Daniel',
+    'Karen'
+  ];
+
+  for (let pref of preferredVoices) {
+    const voice = voices.find(v => v.name.includes(pref));
+    if (voice) return voice;
+  }
+  
+  return voices.find(v => v.lang.startsWith('en')) || voices[0];
+}
+
 function speakResponse(text) {
   if (!synth) {
     console.warn('Speech synthesis not available.');
@@ -234,6 +256,14 @@ function speakResponse(text) {
   setAppState('speaking');
   
   const utterance = new SpeechSynthesisUtterance(text);
+  const voice = getFriendlyVoice();
+  if (voice) {
+    utterance.voice = voice;
+  }
+  // Adjust pitch slightly if a premium voice isn't found
+  if (!voice || (!voice.name.includes('Natural') && !voice.name.includes('Google'))) {
+    utterance.pitch = 1.1;
+  }
   
   utterance.onend = () => {
     setAppState('idle');
