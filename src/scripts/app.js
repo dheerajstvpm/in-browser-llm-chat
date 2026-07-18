@@ -20,6 +20,16 @@ const switchModelBtn = document.getElementById('switch-model-btn');
 
 let engine = null;
 
+// Fix for WindowSizeConfigurationError in WebLLM
+prebuiltAppConfig.model_list.forEach(model => {
+  if (!model.overrides) {
+    model.overrides = {};
+  }
+  if (model.overrides.context_window_size !== undefined) {
+    model.overrides.sliding_window_size = -1;
+  }
+});
+
 // Populate model select dynamically
 modelSelect.innerHTML = '';
 prebuiltAppConfig.model_list.forEach(model => {
@@ -72,7 +82,10 @@ downloadBtn.addEventListener('click', async () => {
       progressText.textContent = initProgress.text;
     };
 
-    engine = await CreateMLCEngine(selectedModel, { initProgressCallback });
+    engine = await CreateMLCEngine(selectedModel, { 
+      initProgressCallback,
+      appConfig: prebuiltAppConfig
+    });
     
     // Setup complete, hide overlay and show app
     setupOverlay.style.display = 'none';
