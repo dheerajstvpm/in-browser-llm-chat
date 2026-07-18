@@ -19,11 +19,20 @@
   padding: 0;
 }
 
+html {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-gradient);
+  overflow: hidden;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg-gradient);
   color: var(--text-primary);
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -72,8 +81,10 @@ body {
 .app-container {
   position: relative;
   z-index: 1;
-  width: 95%;
+  width: 100%;
   max-width: 800px;
+  height: 100%;
+  max-height: 90vh;
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -85,7 +96,6 @@ body {
   flex-direction: column;
   gap: 16px;
   transition: all 0.3s ease;
-  height: 90vh;
 }
 
 header {
@@ -415,7 +425,6 @@ p.subtitle {
   justify-content: center;
   padding: 40px;
   text-align: center;
-  border-radius: 24px;
 }
 
 .setup-card {
@@ -530,8 +539,7 @@ p.subtitle {
 @media (max-width: 600px) {
   .app-container {
     padding: 16px;
-    width: 100%;
-    height: 100vh;
+    max-height: 100%;
     border-radius: 0;
     border: none;
   }
