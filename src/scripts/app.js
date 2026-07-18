@@ -17,6 +17,9 @@ const aiResponseBox = document.getElementById('ai-response');
 const aiLabel = document.getElementById('ai-label');
 
 const switchModelBtn = document.getElementById('switch-model-btn');
+const stopBtn = document.getElementById('stop-btn');
+const textInput = document.getElementById('text-input');
+const sendBtn = document.getElementById('send-btn');
 
 let engine = null;
 
@@ -111,10 +114,11 @@ let currentAiSession = null;
 // Application states: 'idle', 'listening', 'thinking', 'speaking'
 function setAppState(state) {
   appContainer.setAttribute('data-state', state);
+  stopBtn.style.display = 'none'; // hide by default in most states
   
   switch(state) {
     case 'idle':
-      statusText.textContent = 'Tap to start speaking';
+      statusText.textContent = 'Tap to start speaking or type a message';
       break;
     case 'listening':
       statusText.textContent = 'Listening...';
@@ -127,6 +131,7 @@ function setAppState(state) {
       break;
     case 'speaking':
       statusText.textContent = 'Speaking...';
+      stopBtn.style.display = 'flex';
       break;
   }
 }
@@ -189,7 +194,7 @@ async function handleAIProcessing(userInput) {
     }
 
     const messages = [
-      { role: "system", content: "You are a helpful, concise AI voice assistant. Keep answers brief as they will be spoken out loud." },
+      { role: "system", content: "You are a helpful AI voice assistant. Summarize your thoughts and give a very concise, easily comprehensible, and human-like response suitable for spoken audio. Do not output verbose lists or complex formatting." },
       { role: "user", content: userInput }
     ];
 
@@ -241,9 +246,40 @@ micBtn.addEventListener('click', () => {
     recognition.stop();
   } else {
     // Stop any ongoing speech synthesis before starting new recognition
-    if (synth.speaking) {
+    if (synth && synth.speaking) {
       synth.cancel();
     }
     recognition.start();
+  }
+});
+
+stopBtn.addEventListener('click', () => {
+  if (synth && synth.speaking) {
+    synth.cancel();
+  }
+  setAppState('idle');
+});
+
+function handleTextSubmit() {
+  const text = textInput.value.trim();
+  if (text.length > 0) {
+    textInput.value = '';
+    // Stop listening if mic is active
+    if (isListening) {
+      recognition.stop();
+    }
+    // Cancel any ongoing speech
+    if (synth && synth.speaking) {
+      synth.cancel();
+    }
+    transcriptBox.textContent = text;
+    handleAIProcessing(text);
+  }
+}
+
+sendBtn.addEventListener('click', handleTextSubmit);
+textInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    handleTextSubmit();
   }
 });

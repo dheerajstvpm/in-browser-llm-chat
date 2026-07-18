@@ -159,6 +159,29 @@ p.subtitle {
   transform: scale(0.95);
 }
 
+/* Stop Button */
+.stop-btn {
+  position: absolute;
+  right: -60px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--danger-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.stop-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: scale(1.05);
+}
+
 /* Ripple effect for listening state */
 .ripple {
   position: absolute;
@@ -190,6 +213,56 @@ p.subtitle {
     transform: scale(2);
     opacity: 0;
   }
+}
+
+/* Text Input Area */
+.text-input-wrapper {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: center;
+  margin-top: -10px;
+}
+
+#text-input {
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+#text-input:focus {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#send-btn {
+  background: var(--accent-color);
+  border: none;
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#send-btn:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+#send-btn:active {
+  transform: scale(0.95);
 }
 
 /* Loading Indicator (Thinking) */
