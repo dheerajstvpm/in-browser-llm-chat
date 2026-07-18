@@ -105,6 +105,24 @@ h1 {
 p.subtitle {
   color: var(--text-secondary);
   font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.switch-model-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.switch-model-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
 }
 
 /* Mic Button */

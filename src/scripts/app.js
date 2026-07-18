@@ -1,4 +1,4 @@
-import { CreateMLCEngine } from '@mlc-ai/web-llm';
+import { CreateMLCEngine, prebuiltAppConfig } from '@mlc-ai/web-llm';
 
 // Setup DOM Elements
 const setupOverlay = document.getElementById('setup-overlay');
@@ -16,7 +16,44 @@ const transcriptBox = document.getElementById('transcript');
 const aiResponseBox = document.getElementById('ai-response');
 const aiLabel = document.getElementById('ai-label');
 
+const switchModelBtn = document.getElementById('switch-model-btn');
+
 let engine = null;
+
+// Populate model select dynamically
+modelSelect.innerHTML = '';
+prebuiltAppConfig.model_list.forEach(model => {
+  const option = document.createElement('option');
+  option.value = model.model_id;
+  
+  let displayName = model.model_id;
+  if (model.vram_required_MB) {
+    const vramGB = (model.vram_required_MB / 1024).toFixed(1);
+    displayName += ` (~${vramGB}GB)`;
+  }
+  
+  option.textContent = displayName;
+  modelSelect.appendChild(option);
+});
+
+// Set default model
+const defaultModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
+if (prebuiltAppConfig.model_list.some(m => m.model_id === defaultModel)) {
+  modelSelect.value = defaultModel;
+}
+
+// Switch Model Logic
+switchModelBtn.addEventListener('click', () => {
+  appContainer.style.display = 'none';
+  setupOverlay.style.display = 'flex';
+  
+  // Reset UI for download
+  progressContainer.style.display = 'none';
+  progressFill.style.width = '0%';
+  progressText.textContent = 'Initializing...';
+  downloadBtn.disabled = false;
+  modelSelect.disabled = false;
+});
 
 // Setup Logic
 downloadBtn.addEventListener('click', async () => {
@@ -26,6 +63,10 @@ downloadBtn.addEventListener('click', async () => {
   progressContainer.style.display = 'block';
 
   try {
+    if (engine) {
+      engine.unload();
+    }
+
     const initProgressCallback = (initProgress) => {
       progressFill.style.width = `${Math.round(initProgress.progress * 100)}%`;
       progressText.textContent = initProgress.text;

@@ -25,9 +25,7 @@ import '../styles/global.css';
       <div class="model-select-wrapper">
         <label for="model-select">Select an AI Model:</label>
         <select id="model-select">
-          <option value="Llama-3-8B-Instruct-q4f32_1-MLC">Llama 3 8B (Recommended, ~4.5GB)</option>
-          <option value="Phi-3.5-mini-instruct-q4f16_1-MLC">Phi-3.5 Mini (~2.5GB)</option>
-          <option value="gemma-2b-it-q4f32_1-MLC">Gemma 2B (~1.5GB)</option>
+          <option value="" disabled selected>Loading models...</option>
         </select>
       </div>
 
@@ -46,7 +44,8 @@ import '../styles/global.css';
   <main class="app-container" data-state="idle" id="app-container" style="display: none;">
     <header>
       <h1>Voice AI</h1>
-      <p class="subtitle">Powered by Chrome Built-in AI</p>
+      <p class="subtitle">Powered by WebLLM</p>
+      <button id="switch-model-btn" class="switch-model-btn">Switch Model</button>
     </header>
 
     <div class="mic-btn-wrapper">
