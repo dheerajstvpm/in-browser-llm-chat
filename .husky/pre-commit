@@ -1,3 +1,2 @@
-pnpm exec lint-staged
-pnpm run check
-pnpm run build
+npx lint-staged
+npx astro check

@@ -10,9 +10,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "push": "git add . && git commit -m \"build files\" && git push",
+    "deploy": "npm run build && npm run push",
     "prepare": "husky"
   },
   "dependencies": {
