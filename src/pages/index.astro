@@ -1,11 +1,61 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import '../styles/global.css';
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chrome AI Voice Assistant</title>
+  <meta name="description" content="Talk to Chrome's built-in AI using your voice." />
+</head>
+<body>
+  <!-- Decorative background blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Main App UI -->
+  <main class="app-container" data-state="idle" id="app-container">
+    <header>
+      <h1>Voice AI</h1>
+      <p class="subtitle">Powered by Chrome Built-in AI</p>
+    </header>
+
+    <div class="mic-btn-wrapper">
+      <div class="ripple"></div>
+      <button class="mic-btn" id="mic-btn" aria-label="Start recording">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" x2="12" y1="19" y2="22"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div id="status-text">Tap to start speaking</div>
+
+    <div class="loading-indicator">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="transcript-box">
+      <div>
+        <div class="transcript-label">You</div>
+        <div id="transcript">Waiting for input...</div>
+      </div>
+      <div>
+        <div class="transcript-label" id="ai-label" style="display: none;">AI</div>
+        <div id="ai-response"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Client-side Logic -->
+  <script>
+    import '../scripts/app.js';
+  </script>
+</body>
+</html>
