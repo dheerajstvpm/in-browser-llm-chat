@@ -5,5 +5,5 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   outDir: './docs',
   base: '/in-browser-llm-chat',
-  site: 'https://dheerajstvpm.github.io'
+  site: 'https://dheerajstvpm.github.io',
 });

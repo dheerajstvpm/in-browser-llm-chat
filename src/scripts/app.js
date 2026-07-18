@@ -24,7 +24,7 @@ const sendBtn = document.getElementById('send-btn');
 let engine = null;
 
 // Fix for WindowSizeConfigurationError in WebLLM
-prebuiltAppConfig.model_list.forEach(model => {
+prebuiltAppConfig.model_list.forEach((model) => {
   if (!model.overrides) {
     model.overrides = {};
   }
@@ -35,23 +35,23 @@ prebuiltAppConfig.model_list.forEach(model => {
 
 // Populate model select dynamically
 modelSelect.innerHTML = '';
-prebuiltAppConfig.model_list.forEach(model => {
+prebuiltAppConfig.model_list.forEach((model) => {
   const option = document.createElement('option');
   option.value = model.model_id;
-  
+
   let displayName = model.model_id;
   if (model.vram_required_MB) {
     const vramGB = (model.vram_required_MB / 1024).toFixed(1);
     displayName += ` (~${vramGB}GB)`;
   }
-  
+
   option.textContent = displayName;
   modelSelect.appendChild(option);
 });
 
 // Set default model
-const defaultModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
-if (prebuiltAppConfig.model_list.some(m => m.model_id === defaultModel)) {
+const defaultModel = 'Llama-3.2-1B-Instruct-q4f32_1-MLC';
+if (prebuiltAppConfig.model_list.some((m) => m.model_id === defaultModel)) {
   modelSelect.value = defaultModel;
 }
 
@@ -59,7 +59,7 @@ if (prebuiltAppConfig.model_list.some(m => m.model_id === defaultModel)) {
 switchModelBtn.addEventListener('click', () => {
   appContainer.style.display = 'none';
   setupOverlay.style.display = 'flex';
-  
+
   // Reset UI for download
   progressContainer.style.display = 'none';
   progressFill.style.width = '0%';
@@ -85,17 +85,17 @@ downloadBtn.addEventListener('click', async () => {
       progressText.textContent = initProgress.text;
     };
 
-    engine = await CreateMLCEngine(selectedModel, { 
+    engine = await CreateMLCEngine(selectedModel, {
       initProgressCallback,
-      appConfig: prebuiltAppConfig
+      appConfig: prebuiltAppConfig,
     });
-    
+
     // Setup complete, hide overlay and show app
     setupOverlay.style.display = 'none';
     appContainer.style.display = 'flex';
   } catch (error) {
-    console.error("Error loading model:", error);
-    progressText.textContent = "Error loading model. See console.";
+    console.error('Error loading model:', error);
+    progressText.textContent = 'Error loading model. See console.';
     progressText.style.color = 'var(--danger-color)';
     downloadBtn.disabled = false;
     modelSelect.disabled = false;
@@ -103,7 +103,8 @@ downloadBtn.addEventListener('click', async () => {
 });
 
 // Web Speech API fallback
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
 const synth = window.speechSynthesis;
 
 let recognition;
@@ -115,8 +116,8 @@ let currentAiSession = null;
 function setAppState(state) {
   appContainer.setAttribute('data-state', state);
   stopBtn.style.display = 'none'; // hide by default in most states
-  
-  switch(state) {
+
+  switch (state) {
     case 'idle':
       statusText.textContent = 'Tap to start speaking or type a message';
       break;
@@ -173,7 +174,7 @@ if (SpeechRecognition) {
 
   recognition.onend = () => {
     isListening = false;
-    
+
     if (finalTranscript.trim().length > 0) {
       // User finished speaking, now send to AI
       handleAIProcessing(finalTranscript);
@@ -190,30 +191,35 @@ async function handleAIProcessing(userInput) {
   setAppState('thinking');
   const sessionId = Date.now();
   currentAiSession = sessionId;
-  
+
   try {
     if (!engine) {
-      throw new Error("AI Engine not initialized. Please refresh and download a model.");
+      throw new Error(
+        'AI Engine not initialized. Please refresh and download a model.',
+      );
     }
 
     const messages = [
-      { role: "system", content: "You are a helpful AI voice assistant. Summarize your thoughts and give a very concise, easily comprehensible, and human-like response suitable for spoken audio. Do not output verbose lists or complex formatting." },
-      { role: "user", content: userInput }
+      {
+        role: 'system',
+        content:
+          'You are a helpful AI voice assistant. Summarize your thoughts and give a very concise, easily comprehensible, and human-like response suitable for spoken audio. Do not output verbose lists or complex formatting.',
+      },
+      { role: 'user', content: userInput },
     ];
 
     const reply = await engine.chat.completions.create({ messages });
-    
+
     if (currentAiSession !== sessionId) return;
 
     const responseText = reply.choices[0].message.content;
-    
+
     // Show AI Response
     aiLabel.style.display = 'block';
     aiResponseBox.textContent = responseText;
-    
+
     // Speak response
     speakResponse(responseText);
-    
   } catch (error) {
     if (currentAiSession !== sessionId) return;
     console.error('AI Processing Error:', error);
@@ -235,15 +241,15 @@ function getFriendlyVoice() {
     'Google UK English Male',
     'Samantha',
     'Daniel',
-    'Karen'
+    'Karen',
   ];
 
   for (let pref of preferredVoices) {
-    const voice = voices.find(v => v.name.includes(pref));
+    const voice = voices.find((v) => v.name.includes(pref));
     if (voice) return voice;
   }
-  
-  return voices.find(v => v.lang.startsWith('en')) || voices[0];
+
+  return voices.find((v) => v.lang.startsWith('en')) || voices[0];
 }
 
 function speakResponse(text) {
@@ -252,28 +258,31 @@ function speakResponse(text) {
     setAppState('idle');
     return;
   }
-  
+
   setAppState('speaking');
-  
+
   const utterance = new SpeechSynthesisUtterance(text);
   const voice = getFriendlyVoice();
   if (voice) {
     utterance.voice = voice;
   }
   // Adjust pitch slightly if a premium voice isn't found
-  if (!voice || (!voice.name.includes('Natural') && !voice.name.includes('Google'))) {
+  if (
+    !voice ||
+    (!voice.name.includes('Natural') && !voice.name.includes('Google'))
+  ) {
     utterance.pitch = 1.1;
   }
-  
+
   utterance.onend = () => {
     setAppState('idle');
   };
-  
+
   utterance.onerror = (e) => {
     console.error('Speech synthesis error:', e);
     setAppState('idle');
   };
-  
+
   synth.speak(utterance);
 }
 

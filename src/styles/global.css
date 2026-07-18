@@ -194,14 +194,14 @@ p.subtitle {
   z-index: 1;
 }
 
-.app-container[data-state="listening"] .mic-btn {
+.app-container[data-state='listening'] .mic-btn {
   background: rgba(239, 68, 68, 0.1);
   border-color: rgba(239, 68, 68, 0.3);
   color: var(--danger-color);
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
 }
 
-.app-container[data-state="listening"] .ripple {
+.app-container[data-state='listening'] .ripple {
   animation: ripple-anim 2s infinite ease-out;
 }
 
@@ -235,7 +235,9 @@ p.subtitle {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.3s, background 0.3s;
+  transition:
+    border-color 0.3s,
+    background 0.3s;
 }
 
 #text-input:focus {
@@ -283,20 +285,32 @@ p.subtitle {
   animation: bounce 1.4s infinite ease-in-out both;
 }
 
-.dot:nth-child(1) { animation-delay: -0.32s; }
-.dot:nth-child(2) { animation-delay: -0.16s; }
-.dot:nth-child(3) { animation-delay: 0; }
-
-@keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0;
 }
 
-.app-container[data-state="thinking"] .loading-indicator {
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.app-container[data-state='thinking'] .loading-indicator {
   display: flex;
 }
 
-.app-container[data-state="thinking"] .mic-btn {
+.app-container[data-state='thinking'] .mic-btn {
   pointer-events: none;
   opacity: 0.5;
 }
@@ -357,15 +371,15 @@ p.subtitle {
   transition: color 0.3s;
 }
 
-.app-container[data-state="listening"] #status-text {
+.app-container[data-state='listening'] #status-text {
   color: var(--danger-color);
 }
 
-.app-container[data-state="thinking"] #status-text {
+.app-container[data-state='thinking'] #status-text {
   color: var(--accent-color);
 }
 
-.app-container[data-state="speaking"] #status-text {
+.app-container[data-state='speaking'] #status-text {
   color: var(--success-color);
 }
 
@@ -550,4 +564,3 @@ p.subtitle {
     height: 44px;
   }
 }
-
