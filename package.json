@@ -1,5 +1,5 @@
 {
-  "name": "chrome-ai-chat",
+  "name": "in-browser-llm-chat",
   "type": "module",
   "version": "0.0.1",
   "engines": {
