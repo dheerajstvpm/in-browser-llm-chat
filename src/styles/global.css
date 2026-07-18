@@ -86,6 +86,7 @@ body {
   align-items: center;
   gap: 30px;
   transition: all 0.3s ease;
+  max-height: 90vh;
 }
 
 header {
@@ -311,6 +312,8 @@ p.subtitle {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  overflow-y: auto;
+  max-height: 40vh;
 }
 
 .transcript-label {
@@ -491,3 +494,60 @@ p.subtitle {
   font-size: 0.85rem;
   color: var(--text-secondary);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .app-container {
+    padding: 24px 20px;
+    gap: 20px;
+    width: 95%;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .mic-btn {
+    width: 64px;
+    height: 64px;
+  }
+
+  .ripple {
+    width: 64px;
+    height: 64px;
+  }
+
+  .stop-btn {
+    right: -40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .transcript-box {
+    padding: 16px;
+    max-height: 35vh;
+  }
+
+  .setup-card {
+    padding: 24px 20px;
+  }
+
+  .setup-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .text-input-wrapper {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #text-input {
+    width: 100%;
+  }
+
+  #send-btn {
+    width: 100%;
+    height: 44px;
+  }
+}
+
