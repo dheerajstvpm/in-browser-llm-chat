@@ -1,5 +1,22 @@
 import { CreateWebWorkerMLCEngine, prebuiltAppConfig } from '@mlc-ai/web-llm';
 
+const isMobileDevice =
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
+
+if (isMobileDevice) {
+  document.body.innerHTML = `
+    <div style="display: flex; height: 100vh; width: 100vw; justify-content: center; align-items: center; background-color: #0d1117; padding: 20px; text-align: center; color: #e6edf3; font-family: sans-serif; box-sizing: border-box;">
+      <div style="max-width: 400px;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 16px;">Desktop Required</h2>
+        <p style="color: #8b949e; line-height: 1.5;">This AI Chat application requires a desktop browser to run properly due to high WebGPU memory requirements. Please access this site on a desktop or laptop computer.</p>
+      </div>
+    </div>
+  `;
+  throw new Error('Mobile access blocked by advisory.');
+}
+
 // Setup DOM Elements
 const setupOverlay = document.getElementById('setup-overlay');
 const modelSelect = document.getElementById('model-select');
@@ -102,10 +119,6 @@ downloadBtn.addEventListener('click', async () => {
           ? error
           : JSON.stringify(error) || 'Unknown error';
     let errorMessage = 'Error loading model. See console.';
-    if (errText.includes('Buffer was unmapped before mapping was resolved')) {
-      errorMessage =
-        'Error: WebGPU memory limit exceeded. If you are still running into this issue with a specific large model (e.g. 7B parameter models), you may want to fall back to a smaller model version (like 1.5B or 3B parameters) on mobile, as those have a smaller baseline memory footprint per token.';
-    }
     progressText.textContent = errorMessage;
     progressText.style.color = 'var(--danger-color)';
     downloadBtn.disabled = false;
@@ -253,10 +266,6 @@ async function handleAIProcessing(userInput) {
           ? error
           : JSON.stringify(error) || 'Unknown error';
     let errorMessage = 'Error: ' + errText;
-    if (errText.includes('Buffer was unmapped before mapping was resolved')) {
-      errorMessage +=
-        '\n\nAdvisory: If you are still running into this issue with a specific large model (e.g. 7B parameter models), you may want to fall back to a smaller model version (like 1.5B or 3B parameters) on mobile, as those have a smaller baseline memory footprint per token.';
-    }
     aiResponseBox.textContent = errorMessage;
     setAppState('idle');
   } finally {
