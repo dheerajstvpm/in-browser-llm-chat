@@ -118,7 +118,7 @@ downloadBtn.addEventListener('click', async () => {
         : typeof error === 'string'
           ? error
           : JSON.stringify(error) || 'Unknown error';
-    let errorMessage = 'Error loading model. See console.';
+    let errorMessage = 'Error loading model: ' + errText;
     progressText.textContent = errorMessage;
     progressText.style.color = 'var(--danger-color)';
     downloadBtn.disabled = false;
