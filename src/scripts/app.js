@@ -241,7 +241,11 @@ async function handleAIProcessing(userInput) {
       { role: 'user', content: userInput },
     ];
 
-    const reply = await engine.chat.completions.create({ messages });
+    const selectedModel = modelSelect.value;
+    const reply = await engine.chat.completions.create({
+      model: selectedModel,
+      messages,
+    });
 
     if (currentAiSession !== sessionId) return;
 
