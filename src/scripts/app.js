@@ -1,4 +1,4 @@
-import { CreateMLCEngine, prebuiltAppConfig } from '@mlc-ai/web-llm';
+import { CreateWebWorkerMLCEngine, prebuiltAppConfig } from '@mlc-ai/web-llm';
 
 // Setup DOM Elements
 const setupOverlay = document.getElementById('setup-overlay');
@@ -94,7 +94,11 @@ downloadBtn.addEventListener('click', async () => {
       progressText.textContent = initProgress.text;
     };
 
-    engine = await CreateMLCEngine(selectedModel, {
+    const worker = new Worker(new URL('./worker.js', import.meta.url), {
+      type: 'module',
+    });
+
+    engine = await CreateWebWorkerMLCEngine(worker, selectedModel, {
       initProgressCallback,
       appConfig: prebuiltAppConfig,
     });
