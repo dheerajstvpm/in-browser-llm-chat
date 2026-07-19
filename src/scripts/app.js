@@ -108,11 +108,14 @@ downloadBtn.addEventListener('click', async () => {
     appContainer.style.display = 'flex';
   } catch (error) {
     console.error('Error loading model:', error);
+    const errText =
+      error && error.message
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : JSON.stringify(error) || 'Unknown error';
     let errorMessage = 'Error loading model. See console.';
-    if (
-      error.message &&
-      error.message.includes('Buffer was unmapped before mapping was resolved')
-    ) {
+    if (errText.includes('Buffer was unmapped before mapping was resolved')) {
       errorMessage =
         'Error: WebGPU memory limit exceeded. If you are still running into this issue with a specific large model (e.g. 7B parameter models), you may want to fall back to a smaller model version (like 1.5B or 3B parameters) on mobile, as those have a smaller baseline memory footprint per token.';
     }
@@ -246,11 +249,14 @@ async function handleAIProcessing(userInput) {
     console.error('AI Processing Error:', error);
     aiLabel.style.display = 'block';
 
-    let errorMessage = 'Error: ' + error.message;
-    if (
-      error.message &&
-      error.message.includes('Buffer was unmapped before mapping was resolved')
-    ) {
+    const errText =
+      error && error.message
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : JSON.stringify(error) || 'Unknown error';
+    let errorMessage = 'Error: ' + errText;
+    if (errText.includes('Buffer was unmapped before mapping was resolved')) {
       errorMessage +=
         '\n\nAdvisory: If you are still running into this issue with a specific large model (e.g. 7B parameter models), you may want to fall back to a smaller model version (like 1.5B or 3B parameters) on mobile, as those have a smaller baseline memory footprint per token.';
     }
