@@ -59,7 +59,7 @@ prebuiltAppConfig.model_list.forEach((model) => {
 });
 
 // Set default model
-const defaultModel = 'Llama-3.2-1B-Instruct-q4f32_1-MLC';
+const defaultModel = 'Llama-3.2-1B-Instruct-q4f16_1-MLC';
 if (prebuiltAppConfig.model_list.some((m) => m.model_id === defaultModel)) {
   modelSelect.value = defaultModel;
 }
