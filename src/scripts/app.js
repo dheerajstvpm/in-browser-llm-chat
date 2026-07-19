@@ -29,21 +29,6 @@ const isMobile =
     navigator.userAgent,
   );
 
-// Fix for WindowSizeConfigurationError in WebLLM
-prebuiltAppConfig.model_list.forEach((model) => {
-  if (!model.overrides) {
-    model.overrides = {};
-  }
-  if (model.overrides.context_window_size !== undefined) {
-    model.overrides.sliding_window_size = -1;
-  }
-  // Prevent WebGPU "Buffer unmapped" OOM errors on mobile
-  if (isMobile) {
-    model.overrides.context_window_size = 1024;
-    model.overrides.prefill_chunk_size = 128;
-  }
-});
-
 // Populate model select dynamically
 modelSelect.innerHTML = '';
 prebuiltAppConfig.model_list.forEach((model) => {
@@ -107,7 +92,6 @@ downloadBtn.addEventListener('click', async () => {
 
     engine = await CreateWebWorkerMLCEngine(currentWorker, selectedModel, {
       initProgressCallback,
-      appConfig: prebuiltAppConfig,
     });
 
     // Setup complete, hide overlay and show app
