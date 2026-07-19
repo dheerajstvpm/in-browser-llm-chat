@@ -22,6 +22,7 @@ const textInput = document.getElementById('text-input');
 const sendBtn = document.getElementById('send-btn');
 
 let engine = null;
+let currentWorker = null;
 
 const isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -39,6 +40,7 @@ prebuiltAppConfig.model_list.forEach((model) => {
   // Prevent WebGPU "Buffer unmapped" OOM errors on mobile
   if (isMobile) {
     model.overrides.context_window_size = 1024;
+    model.overrides.prefill_chunk_size = 128;
   }
 });
 
@@ -87,6 +89,11 @@ downloadBtn.addEventListener('click', async () => {
   try {
     if (engine) {
       engine.unload();
+      engine = null;
+    }
+    if (currentWorker) {
+      currentWorker.terminate();
+      currentWorker = null;
     }
 
     const initProgressCallback = (initProgress) => {
@@ -94,11 +101,11 @@ downloadBtn.addEventListener('click', async () => {
       progressText.textContent = initProgress.text;
     };
 
-    const worker = new Worker(new URL('./worker.js', import.meta.url), {
+    currentWorker = new Worker(new URL('./worker.js', import.meta.url), {
       type: 'module',
     });
 
-    engine = await CreateWebWorkerMLCEngine(worker, selectedModel, {
+    engine = await CreateWebWorkerMLCEngine(currentWorker, selectedModel, {
       initProgressCallback,
       appConfig: prebuiltAppConfig,
     });
@@ -133,6 +140,7 @@ const synth = window.speechSynthesis;
 
 let recognition;
 let isListening = false;
+let isGenerating = false;
 let finalTranscript = '';
 let currentAiSession = null;
 
@@ -212,6 +220,11 @@ if (SpeechRecognition) {
 
 // WebLLM Processing
 async function handleAIProcessing(userInput) {
+  if (isGenerating) {
+    console.warn('AI is currently processing a request. Ignoring new input.');
+    return;
+  }
+  isGenerating = true;
   setAppState('thinking');
   const sessionId = Date.now();
   currentAiSession = sessionId;
@@ -262,6 +275,8 @@ async function handleAIProcessing(userInput) {
     }
     aiResponseBox.textContent = errorMessage;
     setAppState('idle');
+  } finally {
+    isGenerating = false;
   }
 }
 
