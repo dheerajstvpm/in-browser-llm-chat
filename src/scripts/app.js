@@ -23,6 +23,11 @@ const sendBtn = document.getElementById('send-btn');
 
 let engine = null;
 
+const isMobile =
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
+
 // Fix for WindowSizeConfigurationError in WebLLM
 prebuiltAppConfig.model_list.forEach((model) => {
   if (!model.overrides) {
@@ -30,6 +35,10 @@ prebuiltAppConfig.model_list.forEach((model) => {
   }
   if (model.overrides.context_window_size !== undefined) {
     model.overrides.sliding_window_size = -1;
+  }
+  // Prevent WebGPU "Buffer unmapped" OOM errors on mobile
+  if (isMobile) {
+    model.overrides.context_window_size = 1024;
   }
 });
 
@@ -95,7 +104,15 @@ downloadBtn.addEventListener('click', async () => {
     appContainer.style.display = 'flex';
   } catch (error) {
     console.error('Error loading model:', error);
-    progressText.textContent = 'Error loading model. See console.';
+    let errorMessage = 'Error loading model. See console.';
+    if (
+      error.message &&
+      error.message.includes('Buffer was unmapped before mapping was resolved')
+    ) {
+      errorMessage =
+        'Error: WebGPU memory limit exceeded. If you are still running into this issue with a specific large model (e.g. 7B parameter models), you may want to fall back to a smaller model version (like 1.5B or 3B parameters) on mobile, as those have a smaller baseline memory footprint per token.';
+    }
+    progressText.textContent = errorMessage;
     progressText.style.color = 'var(--danger-color)';
     downloadBtn.disabled = false;
     modelSelect.disabled = false;
@@ -224,7 +241,16 @@ async function handleAIProcessing(userInput) {
     if (currentAiSession !== sessionId) return;
     console.error('AI Processing Error:', error);
     aiLabel.style.display = 'block';
-    aiResponseBox.textContent = 'Error: ' + error.message;
+
+    let errorMessage = 'Error: ' + error.message;
+    if (
+      error.message &&
+      error.message.includes('Buffer was unmapped before mapping was resolved')
+    ) {
+      errorMessage +=
+        '\n\nAdvisory: If you are still running into this issue with a specific large model (e.g. 7B parameter models), you may want to fall back to a smaller model version (like 1.5B or 3B parameters) on mobile, as those have a smaller baseline memory footprint per token.';
+    }
+    aiResponseBox.textContent = errorMessage;
     setAppState('idle');
   }
 }
