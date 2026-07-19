@@ -24,22 +24,6 @@ const sendBtn = document.getElementById('send-btn');
 let engine = null;
 let currentWorker = null;
 
-const isMobile =
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent,
-  );
-
-// Prevent WebGPU "Buffer unmapped" OOM errors on mobile by strictly limiting memory usage
-prebuiltAppConfig.model_list.forEach((model) => {
-  if (!model.overrides) {
-    model.overrides = {};
-  }
-  if (isMobile) {
-    model.overrides.context_window_size = 1024;
-    model.overrides.prefill_chunk_size = 128;
-  }
-});
-
 // Populate model select dynamically
 modelSelect.innerHTML = '';
 prebuiltAppConfig.model_list.forEach((model) => {
